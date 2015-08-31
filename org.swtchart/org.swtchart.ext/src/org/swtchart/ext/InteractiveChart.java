@@ -311,7 +311,7 @@ public class InteractiveChart extends Chart implements PaintListener {
 
 			// relating the cursor position with the data
             for (IAxis axis : getAxisSet().getAxes()) {
-            	if (axis.getDirection().ordinal() == 0) {
+            	if (axis.getDirection() == Direction.X) {
             		// x-axis
             		double x = axis.getDataCoordinate(event.x);
             		tmp_result = findDataX(x);
@@ -322,7 +322,7 @@ public class InteractiveChart extends Chart implements PaintListener {
         					tmp_result =null;
         			}
 
-            	} else if (axis.getDirection().ordinal() == 1)
+            	} else if (axis.getDirection() == Direction.Y)
             	{	// y-axis
             		if (tmp_result == null)
             			continue;
