@@ -16,8 +16,8 @@ public class TestChart {
 
     //private static final String[] categorySeries = { "Mon", "Tue", "Wed",
     //        "Thu", "Fri" };
-    private static final double[] yLineSeries1 = { 4.6, 5.4, 6.9, 5.6, 7.1 };
-    private static final double[] yLineSeries2 = { 6.0, 5.1, 4.9, 5.3, 4.2 };
+    private static final double[] yLineSeries1 = { 4.6, 5.4, 6.9, 5.6, 0.0, 7.1 };
+    private static final double[] yLineSeries2 = { 6.0, 5.1, 4.9, 0.0, 5.3, 4.2 };
     /**
 	 * @param args
 	 */
