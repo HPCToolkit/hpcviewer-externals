@@ -301,9 +301,7 @@ public class InteractiveChart extends Chart implements PaintListener {
      *            the mouse down event
      */
     private void handleMouseDownEvent(Event event) {
-        if (event.button == 1) {
-            selection.setStartPoint(event.x, event.y);
-            clickedTime = System.currentTimeMillis();
+    	if (event.button == 1) {
 
             // get the closest data to the cursor:q
             UserSelectionData result = null, tmp_result = null;
@@ -346,7 +344,13 @@ public class InteractiveChart extends Chart implements PaintListener {
             }
 			
             if (chartListener != null && result != null) {
+            	// notify user that the selection is valid
+            	result.event = event;
             	chartListener.selection(result);
+            } else 
+            {	// start to draw rectangle if needed
+                clickedTime = System.currentTimeMillis();
+                selection.setStartPoint(event.x, event.y);
             }
         }
     }

@@ -1,8 +1,12 @@
 package org.swtchart.examples.ext;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.swtchart.Chart;
 import org.swtchart.ILineSeries;
@@ -25,7 +29,7 @@ public class TestChart {
 		
 
         Display display = new Display();
-        Shell shell = new Shell(display);
+        final Shell shell = new Shell(display);
         shell.setText("Angled Axis Tick Labels");
         shell.setSize(500, 400);
         shell.setLayout(new FillLayout());
@@ -36,12 +40,26 @@ public class TestChart {
 
         // set title
         chart.getTitle().setText("Sample Interactive Chart");
+        final MenuManager menuManager = new MenuManager("View");
 
         ((InteractiveChart)chart).setChartSelectionListener(new IChartSelectionListener() {
 			
 			@Override
 			public void selection(UserSelectionData data) {
 				System.out.format("%d (%f, %f)\n", data.index, data.valueX, data.valueY);
+            	Point point    = new Point(data.event.x+40, data.event.y+30);
+            	point = shell.toDisplay(point);
+            	menuManager.removeAll();
+            	menuManager.createContextMenu(shell);
+            	menuManager.add(new Action("totoro") {
+            		public void run() {
+            		  System.out.println("result");	
+            		}
+				});
+            	final Menu menu = menuManager.getMenu();
+            	menu.setLocation(point);
+            	menu.setVisible(true);
+
 			}
 		});
         // set category series
