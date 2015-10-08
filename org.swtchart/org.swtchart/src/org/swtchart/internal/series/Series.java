@@ -264,9 +264,11 @@ abstract public class Series implements ISeries {
         }
 
         // find the min and max value of y series
-        minY = ySeries[0];
-        maxY = ySeries[0];
-        for (int i = 1; i < ySeries.length; i++) {
+        minY = Double.MAX_VALUE;
+        maxY = Double.MIN_VALUE;
+        for (int i = 0; i < ySeries.length; i++) {
+        	if (isInvalidSeries(ySeries[i]))
+        		continue;
             if (minY > ySeries[i]) {
                 minY = ySeries[i];
             }
@@ -669,6 +671,18 @@ abstract public class Series implements ISeries {
         }
 
         draw(gc, width, height, xAxis, yAxis);
+    }
+    
+    /**
+     * Returns if the value is invalid or not.
+     * Temporarily, we set any NaN value is invalid. In the future, it should
+     * be customizable by the user.
+     * 
+     * @param value : value to check
+     * @return true if it's invalid, false otherwise
+     */
+    static protected boolean isInvalidSeries(double value) {
+    	return Double.isNaN(value);
     }
 
     /**

@@ -21,7 +21,7 @@ public class TestChart {
     //private static final String[] categorySeries = { "Mon", "Tue", "Wed",
     //        "Thu", "Fri" };
     private static final double[] yLineSeries1 = { 4.6, 5.4, 6.9, 5.6, 0.0, 7.1 };
-    private static final double[] yLineSeries2 = { 6.0, 5.1, 4.9, 0.0, 5.3, 4.2 };
+    private static final double[] yLineSeries2 = { 6.0, 5.1, 4.9, Double.NaN, 5.3, 4.2 };
     /**
 	 * @param args
 	 */
@@ -46,14 +46,14 @@ public class TestChart {
 			
 			@Override
 			public void selection(UserSelectionData data) {
-				System.out.format("%d (%f, %f)\n", data.index, data.valueX, data.valueY);
+				String outMsg = String.format("%d (%f, %f)", data.index, data.valueX, data.valueY);
             	Point point    = new Point(data.event.x+40, data.event.y+30);
             	point = shell.toDisplay(point);
             	menuManager.removeAll();
             	menuManager.createContextMenu(shell);
-            	menuManager.add(new Action("totoro") {
+            	menuManager.add(new Action(outMsg) {
             		public void run() {
-            		  System.out.println("result");	
+            		  System.out.println("result: " + getText());	
             		}
 				});
             	final Menu menu = menuManager.getMenu();

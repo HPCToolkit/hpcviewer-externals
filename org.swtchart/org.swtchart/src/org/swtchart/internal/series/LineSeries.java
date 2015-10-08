@@ -522,6 +522,9 @@ public class LineSeries extends Series implements ILineSeries {
         int verticalLineYUpper = 0;
 
         for (int i = 0; i < xseries.length - 1; i++) {
+        	if (isInvalidSeries(yseries[i + 1])) {
+        		continue;
+        	}
             int x = xAxis.getPixelCoordinate(xseries[i + 1], xLower, xUpper);
             int y = yAxis.getPixelCoordinate(yseries[i + 1], yLower, yUpper);
 
@@ -730,6 +733,9 @@ public class LineSeries extends Series implements ILineSeries {
 
         // draw symbol and label
         for (int i = 0; i < xseries.length; i++) {
+        	if (Series.isInvalidSeries(yseries[i]))
+        		continue;
+        	
             Color color;
             if (symbolColors.length > indexes[i]) {
                 color = symbolColors[indexes[i]];
