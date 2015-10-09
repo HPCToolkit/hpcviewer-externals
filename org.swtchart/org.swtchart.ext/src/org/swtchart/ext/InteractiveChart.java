@@ -330,14 +330,16 @@ public class InteractiveChart extends Chart implements PaintListener {
             		{
             			double []y_values = serie.getYSeries();
             			double result_y = y_values[tmp_result.index];
-            			if (Math.abs(result_y-y) <= Math.abs(tmp_result.valueY-y))
-            			{
-            				int axis_y = axis.getPixelCoordinate(result_y);
-            				if (Math.abs(axis_y-event.y) < symbolSize) {
-            					result = tmp_result;
-                				result.valueY = result_y;
-                				result.serie = serie;
-            				}
+            			if (! Double.isNaN(result_y)) {
+                			if (Math.abs(result_y-y) <= Math.abs(tmp_result.valueY-y))
+                			{
+                				int axis_y = axis.getPixelCoordinate(result_y);
+                				if (Math.abs(axis_y-event.y) < symbolSize) {
+                					result = tmp_result;
+                    				result.valueY = result_y;
+                    				result.serie = serie;
+                				}
+                			}
             			}
             		}
             	}
