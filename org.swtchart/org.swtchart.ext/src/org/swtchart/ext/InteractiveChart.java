@@ -229,22 +229,24 @@ public class InteractiveChart extends Chart implements PaintListener {
     	chartListener = listener;
     }
     
+    /** assuming all series have the same values, this variable stores the x values**/
+    private double []x_values = null;
+    
+    /***
+     * find the closest x value from the x axis
+     * this doens't guarantee if x is really the same to the x value
+     * @param value
+     * @return
+     */
     private UserSelectionData findDataX(double value)
     {
-    	ISeries []series = getSeriesSet().getSeries();
-    	UserSelectionData result = null;
-    	for(ISeries serie : series)
-    	{
-    		double []x = serie.getXSeries();
-    		UserSelectionData new_result = binarySearch(value, x);
-    		if (result == null ||
-    				(result != null && 
-    				(Math.abs(value-new_result.valueX) < Math.abs(value-result.valueX)))) 
-    		{
-    			result = new_result;
-    			result.serie = serie;
-    		}
+    	ISeries serie = getSeriesSet().getSeries()[0];
+    	if (x_values == null) {
+    		// assume all series have the same x values
+    		x_values = serie.getXSeries();
     	}
+    	UserSelectionData result = binarySearch(value, x_values);    	
+    	result.serie = serie;
     	return result;
     }
     
@@ -303,57 +305,68 @@ public class InteractiveChart extends Chart implements PaintListener {
     private void handleMouseDownEvent(Event event) {
     	if (event.button == 1) {
 
-            // get the closest data to the cursor:q
-            UserSelectionData result = null, tmp_result = null;
-			int symbolSize = 0;
+    		if (chartListener != null) {
+                // get the closest data to the cursor:q
+                UserSelectionData result = null, tmp_result = null;
+    			int symbolSize = 0;
 
-			// relating the cursor position with the data
-            for (IAxis axis : getAxisSet().getAxes()) {
-            	if (axis.getDirection() == Direction.X) {
-            		// x-axis
-            		double x = axis.getDataCoordinate(event.x);
-            		tmp_result = findDataX(x);
-        			if (tmp_result.serie.getType() == SeriesType.LINE) {
-        				symbolSize = ((ILineSeries)tmp_result.serie).getSymbolSize();
-        				int x_pixel = axis.getPixelCoordinate(tmp_result.valueX);
-        				if (Math.abs(event.x-x_pixel) > symbolSize)
-        					tmp_result =null;
-        			}
+    			// relating the cursor position with the data
+                for (IAxis axis : getAxisSet().getAxes()) {
+                	if (axis.getDirection() == Direction.X) {
+                		// x-axis
+                		double x = axis.getDataCoordinate(event.x);
+                		tmp_result = findDataX(x);
+            			if (tmp_result.serie.getType() == SeriesType.LINE) {
+            				symbolSize = ((ILineSeries)tmp_result.serie).getSymbolSize();
+            				int x_pixel = axis.getPixelCoordinate(tmp_result.valueX);
+            				if (Math.abs(event.x-x_pixel) > symbolSize)
+            					tmp_result =null;
+            			}
 
-            	} else if (axis.getDirection() == Direction.Y)
-            	{	// y-axis
-            		if (tmp_result == null)
-            			continue;
-            		double y = axis.getDataCoordinate(event.y);
-            		ISeries []series = getSeriesSet().getSeries();
-            		for (ISeries serie : series)
-            		{
-            			double []y_values = serie.getYSeries();
-            			double result_y = y_values[tmp_result.index];
-            			if (! Double.isNaN(result_y)) {
-                			if (Math.abs(result_y-y) <= Math.abs(tmp_result.valueY-y))
-                			{
-                				int axis_y = axis.getPixelCoordinate(result_y);
-                				if (Math.abs(axis_y-event.y) < symbolSize) {
-                					result = tmp_result;
-                    				result.valueY = result_y;
-                    				result.serie = serie;
+                	} else if (axis.getDirection() == Direction.Y)
+                	{	// y-axis
+                		if (tmp_result == null)
+                			continue;
+
+                		ISeries []series = getSeriesSet().getSeries();
+                		for (ISeries serie : series)
+                		{
+                			double []y_values = serie.getYSeries();
+                			double y_min = axis.getDataCoordinate(event.y-symbolSize);
+                			double y_max = axis.getDataCoordinate(event.y+symbolSize);
+                			
+                			int index = tmp_result.index;
+                			if (Double.isNaN(y_values[index]) ) {
+                				// check the lower value
+                				for (; Double.isNaN(y_values[index]) && y_values[index] > y_min; index--) {
+                				}
+                				// check the upper value
+                				if (Double.isNaN(y_values[index])) {
+                					index = tmp_result.index + 1;
+                					for (; Double.isNaN(y_values[index]) && y_values[index] < y_max; index++);
+                				}
+                			}                			
+                			if (! Double.isNaN(y_values[index])) {
+                    			// double check
+                				int y_coord   = axis.getPixelCoordinate(y_values[index]);
+                				if (Math.abs(y_coord-event.y)<symbolSize) {
+                					result		  = tmp_result;
+                    				result.valueY = y_values[index];
+                    				result.valueX = x_values[index];
+                    				result.serie  = serie;
+                    				result.event  = event;
+                    				result.index  = index;
+                    				
+                                	chartListener.selection(result);
+                                	return;
                 				}
                 			}
-            			}
-            		}
-            	}
+                		}
+                	}
+                }
             }
-			
-            if (chartListener != null && result != null) {
-            	// notify user that the selection is valid
-            	result.event = event;
-            	chartListener.selection(result);
-            } else 
-            {	// start to draw rectangle if needed
-                clickedTime = System.currentTimeMillis();
-                selection.setStartPoint(event.x, event.y);
-            }
+            clickedTime = System.currentTimeMillis();
+            selection.setStartPoint(event.x, event.y);
         }
     }
 
