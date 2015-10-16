@@ -14,9 +14,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.swtchart.Chart;
 import org.swtchart.IAxis;
-import org.swtchart.ILineSeries;
-import org.swtchart.ISeries;
-import org.swtchart.ISeries.SeriesType;
 import org.swtchart.Range;
 import org.swtchart.IAxis.Direction;
 import org.swtchart.ext.internal.SelectionRectangle;
@@ -54,9 +51,6 @@ public class InteractiveChart extends Chart implements PaintListener {
     /** the resources created with properties dialog */
     private PropertiesResources resources;
 
-    /** listener for a select event in the chart */
-    private IChartSelectionListener chartListener;
-    
     /**
      * Constructor.
      * 
@@ -68,6 +62,10 @@ public class InteractiveChart extends Chart implements PaintListener {
     public InteractiveChart(Composite parent, int style) {
         super(parent, style);
         init();
+    }
+    
+    protected void resetSelection() {
+    	selection.dispose();
     }
 
     /**
@@ -223,65 +221,6 @@ public class InteractiveChart extends Chart implements PaintListener {
         super.dispose();
         resources.dispose();
     }
-
-    public void setChartSelectionListener(IChartSelectionListener listener)
-    {
-    	chartListener = listener;
-    }
-    
-    /** assuming all series have the same values, this variable stores the x values**/
-    private double []x_values = null;
-    
-    /***
-     * find the closest x value from the x axis
-     * this doens't guarantee if x is really the same to the x value
-     * @param value
-     * @return
-     */
-    private UserSelectionData findDataX(double value)
-    {
-    	ISeries serie = getSeriesSet().getSeries()[0];
-    	if (x_values == null) {
-    		// assume all series have the same x values
-    		x_values = serie.getXSeries();
-    	}
-    	UserSelectionData result = binarySearch(value, x_values);    	
-    	result.serie = serie;
-    	return result;
-    }
-    
-    /****
-     * Searching a value in a monotonic array
-     * @param value : value to be search
-     * @param data  : increasingly monotonic array
-     * @return
-     */
-    private UserSelectionData binarySearch(double value, double []data)
-    {
-		int min = 0;
-		int max = data.length-1;
-		while (min < max-1)
-		{
-			int mid = min+(max-min)/2;
-    		double result  = data[mid];
-			if (result < value)
-				min = mid;
-			else if (result > value)
-				max = mid;
-			else 
-				break;
-		}
-		UserSelectionData res = new UserSelectionData();
-		if ( Math.abs(data[max]-value) < Math.abs(value-data[min])) {
-			res.valueX = data[max];
-			res.index = max;
-		}
-		else {
-			res.valueX = data[min];
-			res.index = min;
-		}
-		return res;
-    }
     
     /**
      * Handles mouse move event.
@@ -304,67 +243,6 @@ public class InteractiveChart extends Chart implements PaintListener {
      */
     private void handleMouseDownEvent(Event event) {
     	if (event.button == 1) {
-
-    		if (chartListener != null) {
-                // get the closest data to the cursor:q
-                UserSelectionData result = null, tmp_result = null;
-    			int symbolSize = 0;
-
-    			// relating the cursor position with the data
-                for (IAxis axis : getAxisSet().getAxes()) {
-                	if (axis.getDirection() == Direction.X) {
-                		// x-axis
-                		double x = axis.getDataCoordinate(event.x);
-                		tmp_result = findDataX(x);
-            			if (tmp_result.serie.getType() == SeriesType.LINE) {
-            				symbolSize = ((ILineSeries)tmp_result.serie).getSymbolSize();
-            				int x_pixel = axis.getPixelCoordinate(tmp_result.valueX);
-            				if (Math.abs(event.x-x_pixel) > symbolSize)
-            					tmp_result =null;
-            			}
-
-                	} else if (axis.getDirection() == Direction.Y)
-                	{	// y-axis
-                		if (tmp_result == null)
-                			continue;
-
-                		ISeries []series = getSeriesSet().getSeries();
-                		for (ISeries serie : series)
-                		{
-                			double []y_values = serie.getYSeries();
-                			double y_min = axis.getDataCoordinate(event.y-symbolSize);
-                			double y_max = axis.getDataCoordinate(event.y+symbolSize);
-                			
-                			int index = tmp_result.index;
-                			if (Double.isNaN(y_values[index]) ) {
-                				// check the lower value
-                				for (; Double.isNaN(y_values[index]) && y_values[index] > y_min; index--) {
-                				}
-                				// check the upper value
-                				if (Double.isNaN(y_values[index])) {
-                					index = tmp_result.index + 1;
-                					for (; Double.isNaN(y_values[index]) && y_values[index] < y_max; index++);
-                				}
-                			}                			
-                			if (! Double.isNaN(y_values[index])) {
-                    			// double check
-                				int y_coord   = axis.getPixelCoordinate(y_values[index]);
-                				if (Math.abs(y_coord-event.y)<symbolSize) {
-                					result		  = tmp_result;
-                    				result.valueY = y_values[index];
-                    				result.valueX = x_values[index];
-                    				result.serie  = serie;
-                    				result.event  = event;
-                    				result.index  = index;
-                    				
-                                	chartListener.selection(result);
-                                	return;
-                				}
-                			}
-                		}
-                	}
-                }
-            }
             clickedTime = System.currentTimeMillis();
             selection.setStartPoint(event.x, event.y);
         }

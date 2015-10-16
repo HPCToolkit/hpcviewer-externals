@@ -1,19 +1,13 @@
 package org.swtchart.examples.ext;
 
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.swtchart.Chart;
 import org.swtchart.ILineSeries;
 import org.swtchart.ISeries.SeriesType;
-import org.swtchart.ext.IChartSelectionListener;
 import org.swtchart.ext.InteractiveChart;
-import org.swtchart.ext.UserSelectionData;
 
 public class TestChart {
 
@@ -40,7 +34,7 @@ public class TestChart {
 
         // set title
         chart.getTitle().setText("Sample Interactive Chart");
-        final MenuManager menuManager = new MenuManager("View");
+/*        final MenuManager menuManager = new MenuManager("View");
 
         ((InteractiveChart)chart).setChartSelectionListener(new IChartSelectionListener() {
 			
@@ -61,7 +55,7 @@ public class TestChart {
             	menu.setVisible(true);
 
 			}
-		});
+		});*/
         // set category series
         //chart.getAxisSet().getXAxis(0).enableCategory(true);
        // chart.getAxisSet().getXAxis(0).setCategorySeries(categorySeries);

@@ -105,23 +105,23 @@ public class FuncMap {
 
 		// 0 parameters
 		//setFunction("pi", new PiFunction());
-		setFunction("e", new EFunction());
 //		setFunction("rand", new RandFunction());
 
 		// 1 parameter
 //		setFunction("sin", new SinFunction());
 //		setFunction("cos", new CosFunction());
 //		setFunction("tan", new TanFunction());
-		setFunction("sqrt", new SqrtFunction());
 		setFunction("abs", new AbsFunction());
 		setFunction("ceil", new CeilFunction());
+		setFunction("fact", new FactFunction());
 		setFunction("floor", new FloorFunction());
+		setFunction("e", new EFunction());
 		setFunction("exp", new ExpFunction());
 		setFunction("lg", new LgFunction());
 		setFunction("ln", new LnFunction());
-		setFunction("sign", new SignFunction());
 		setFunction("round", new RoundFunction());
-		setFunction("fact", new FactFunction());
+		setFunction("sign", new SignFunction());
+		setFunction("sqrt", new SqrtFunction());
 //		setFunction("cosh", new CoshFunction());
 //		setFunction("sinh", new SinhFunction());
 //		setFunction("tanh", new TanhFunction());
@@ -133,9 +133,9 @@ public class FuncMap {
 //		setFunction("atanh", new AtanhFunction());
 
 		// 2 parameters
-		setFunction("pow", new PowFunction());
-		setFunction("mod", new ModFunction());
 		setFunction("combin", new CombinFunction());
+		setFunction("mod", new ModFunction());
+		setFunction("pow", new PowFunction());
 
 		// 1 or 2 parameters
 		setFunction("log", new LogFunction());
