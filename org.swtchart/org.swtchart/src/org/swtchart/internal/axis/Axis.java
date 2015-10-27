@@ -379,10 +379,14 @@ public class Axis implements IAxis {
             // get min and max value of series
             Range range = ((Series) series).getAdjustedRange(this, length);
             if (Double.isNaN(minimum) || range.lower < minimum) {
-                minimum = range.lower;
+            	if (!Double.isInfinite(range.lower)) {
+                    minimum = range.lower;
+            	}
             }
             if (Double.isNaN(maximum) || range.upper > maximum) {
-                maximum = range.upper;
+            	if (!Double.isInfinite(range.upper)) {
+                    maximum = range.upper;
+            	}
             }
         }
 
