@@ -736,7 +736,7 @@ public class AxisTickLabels implements PaintListener {
         double mantissa = gridStepHint;
         int exponent = 0;
         if (mantissa < 1) {
-            while (mantissa < 1) {
+            while (mantissa>0.0 && mantissa < 1) {
                 mantissa *= 10.0;
                 exponent--;
             }
