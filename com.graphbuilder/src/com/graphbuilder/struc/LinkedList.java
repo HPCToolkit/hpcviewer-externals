@@ -166,7 +166,7 @@ public class LinkedList {
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer(6 * size);
-		sb.append("[");
+		sb.append(']');
 		Node n = head;
 
 		if (n != null) {
@@ -180,6 +180,6 @@ public class LinkedList {
 			n = n.next;
 		}
 
-		return sb.append("]").toString();
+		return sb.append(']').toString();
 	}
 }
