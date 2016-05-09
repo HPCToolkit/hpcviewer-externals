@@ -6,3 +6,4 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: com.graphbuilder.math,
  com.graphbuilder.math.func
+Bundle-Vendor: Graphbuilder
