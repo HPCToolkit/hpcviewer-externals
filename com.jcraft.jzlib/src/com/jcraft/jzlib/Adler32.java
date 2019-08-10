@@ -88,7 +88,7 @@ final public class Adler32 implements Checksum {
     s2%=BASE;
   }
 
-  public Adler32 copy(){
+  public Checksum copy(){
     Adler32 foo = new Adler32();
     foo.s1 = this.s1;
     foo.s2 = this.s2;

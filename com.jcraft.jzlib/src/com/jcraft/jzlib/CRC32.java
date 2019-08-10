@@ -165,7 +165,7 @@ final public class CRC32 implements Checksum {
     return crc32.getValue();
   }
 */
-  public CRC32 copy(){
+  public Checksum copy(){
     CRC32 foo = new CRC32();
     foo.v = this.v;
     return foo;
